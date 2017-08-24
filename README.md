@@ -73,10 +73,23 @@ python get_results.py \
 The results of all completed HITs are now stored as in the file `examples/image_sentence/results.txt`.
 Each line of the file contains a JSON blob with the results from a single assignment.
 
+If you collect your results before all your hits have been completed and need to call get results again, you can optimize the function by passing in the results you have already collected using the following command:
+```
+python get_results.py \
+  --hit_ids_file=examples/image_sentence/hit_ids.txt \
+  --output_file=examples/image_sentence/results.txt \
+  > examples/image_sentence/results.txt
+```
+
 ### Approve work
 If you are satisfied with the results that you have gotten, you can approve all completed assignments from your HIT batch by running the following command:
 ```
-python approve_assignments.py --hit_ids_file=examples/image_sentence/hit_ids.txt
+python approve_hits.py --hit_ids_file=examples/image_sentence/hit_ids.txt
+```
+
+Or if you want to approve individual assignments, you can save all the assignments id in a file ```assignment_ids.txt``` and then call the following command:
+```
+python approve_assignments.py --assignment_ids_file=examples/image_sentence/assignment_ids.txt
 ```
 
 ### Delete HITs
@@ -85,6 +98,40 @@ Once your HITs are completed and you have saved the results, you can delete the 
 python disable_hits.py --hit_ids_file=examples/image_sentence/hit_ids.txt
 ```
 **WARNING:** After running this command, your HITs will no longer be visible to workers, and you will no longer be able to retrieve HIT results from Amazon. Make sure that you have saved the HIT results before running this command.
+
+### Get All HITs
+In the event that you want to get the results for all the hits that you have launched on mtc, regardless of what their hit ids are, you can call the following function. It will save a json array where every element is a hit result.
+```
+python get_all_hits.py \
+  > examples/image_sentence/all_results.txt
+```
+
+### Rejecting Work
+If you are unhappy with the work done and want to reject the work, you can call the following command (please note that rejecting work harms worker's rating on the site and can influence their ability to find other work):
+```
+python reject_hits.py --hit_ids_file=examples/image_sentence/hit_ids.txt
+```
+
+Or you can also reject individual assignments:
+```
+python reject_assignments.py --assignment_ids_file=examples/image_sentence/assignment_ids.txt
+```
+
+You can also disable individual hit ids from the command line:
+```
+python disable_hit.py --hit_id THE_HIT_ID_YOU_WANT_TO_DISABLE
+```
+
+### Blocking Workers
+In extreme cases, when you want to prevent a malicious worker from affecting your work, you can use the following commands to block or unblock them using their worker ids. Save the worker ids that you want to block in a file (e.g. ```worker_ids.txt```) and call the following to block workers:
+```
+python block_workers.py --worker_ids_file=examples/image_sentence/worker_ids.txt
+```
+
+or to unblock workers:
+```
+python unblock_workers.py --worker_ids_file=examples/image_sentence/worker_ids.txt
+```
 
 ### Running on the production site
 To run your HITs on the production AMT site, simply append a `--prod` flag to each of the above commands.
@@ -126,10 +173,10 @@ To see a minimal example of these functions in action, look at the file `hit_tem
 While developing a HIT template, you will need to render the template to produce a valid HTML page that you can view in a browser. You can do this using the `render_template.py` script. Use it like this:
 
 ```
-python render_template.py --html_template=simple.html
+python render_template.py --html_template=rendered_templates/simple.html
 ```
 
-The rendered template will be stored in a directory called `rendered_templates` (you can change this by editing your config file). Whenever you change your HIT template you will need to rerender to see your changes.
+The rendered template will be stored in a directory called `rendered_templates` (you can change this by passing in the complete destination path of where you want the html rendered file to be saved.). Whenever you change your HIT template you will need to rerender to see your changes.
 
 To actually view the rendered template in a web browser, you will need to run a local HTTP server so that protocol-relative URLs resolve properly. Python makes this very easy; just run
 
@@ -152,3 +199,6 @@ To launch HITs, you need both an HTML template defining the UI for the HIT and a
 - `country`: Optional. Must be a string. If you set this, then only workers from the specified country will be allowed to work on your HITs. This must be either a valid [ISO 3166 country code](http://www.iso.org/iso/country_codes/country_codes) or a valid [ISO 3166-2 subdivision code](http://en.wikipedia.org/wiki/ISO_3166-2:US). I usually just use "US".
 - `hits_approved`: Optional. Must be an integer. If you set this, then only workers who have had at least this many HITs approved on Mechanical Turk will be allowed to work on your assignments.
 - `percent_approved`: Optional. Must be an integer. If you set this, then only workers who have had at least this percent of their submitted HITs approved will be allowed to work on your HITs.
+- `qualification_id`: Optional. If you have assigned qualifications to some workers, then this is only allow those workers with this qualification id to work on your hits.
+- `qualification_comparator`: Optional. Must be one of `<`, `=`, or `>`. This helps decide whether you want the workers to have a qualification that is greater, equal or less than the `qualification_integer`.
+- `qualification_integer`: Optional. Must be an integer. The value used to threshold workers to be above, equal or below (determined by `qualification_comparator`).
