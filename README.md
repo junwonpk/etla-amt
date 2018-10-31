@@ -20,7 +20,7 @@ pip install -r requirements.txt
 
 ### Configure your Amazon account
 To use AMT, you'll need an Amazon AWS account. To interact with Amazon, simple-amt needs
-an access key and corresponding secret key for your Amazon account. You can find these 
+an access key and corresponding secret key for your Amazon account. You can find these
 [here](https://console.aws.amazon.com/iam/home?#security_credential). Once you have these,
 place then in a file called config.json for simple-amt:
 ```
@@ -33,7 +33,7 @@ cp config.json.example config.json
 We've included a sample HIT that asks workers to write sentences to describe images. To launch a couple of these HITs on the AMT sandbox, run the following:
 ```
 python launch_hits.py \
-  --html_template=image_sentence.html \
+  --html_template=hit_templates/image_sentence.html \
   --hit_properties_file=hit_properties/image_sentence.json \
   --input_json_file=examples/image_sentence/example_input.txt \
   --hit_ids_file=examples/image_sentence/hit_ids.txt
@@ -137,7 +137,7 @@ python unblock_workers.py --worker_ids_file=examples/image_sentence/worker_ids.t
 To run your HITs on the production AMT site, simply append a `--prod` flag to each of the above commands.
 
 **WARNING:** Running HITs on sandbox is free, but running HITs on the production site is not. In order to launch HITs your Mechanical Turk account must have sufficient funds to pay for all HITs; these funds will be held in escrow by Amazon once you
-launch HITs, and will be paid to workers when you approve assignments. 
+launch HITs, and will be paid to workers when you approve assignments.
 
 
 # Creating your own HITs

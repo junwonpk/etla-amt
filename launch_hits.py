@@ -1,3 +1,5 @@
+# encoding=utf8
+
 import argparse, json
 
 from boto.mturk.price import Price
@@ -7,6 +9,10 @@ from boto.mturk.connection import MTurkRequestError
 import os
 import simpleamt
 import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(parents=[simpleamt.get_parent_parser()])
@@ -55,5 +61,3 @@ if __name__ == '__main__':
       hit_id = boto_hit[0].HITId
       hit_ids_file.write('%s\n' % hit_id)
       print 'Launched HIT ID: %s, %d' % (hit_id, i + 1)
-
-
