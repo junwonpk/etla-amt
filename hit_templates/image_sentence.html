@@ -68,11 +68,7 @@
         let techniques = {
             "Expertise Compliment": "Compliment the knowledge of listener based on photo they posted.",
             "Content Compliment": "Compliment an object in the photo. The object being complimented must be the subject of the question or related.",
-            "Syntactic Unity": "Match the valence of the caption (or comments, if caption not available).",
             "Semantic Unity": "Show interest about the content.",
-            "Social Proof": "Use a second bot that attempts to answer the question bot's question to demonstrate an answering behavior.",
-            "Time Scarcity": "Specify the deadline before which a response is required.",
-            "Explicit Request for Help": "Explicitly ask them to help you understand what an object is in the image.",
             "Logical Justification": "Could you tell me what the yellow thing on the desk is? It's because I want to buy the same product!",
             "Illogical Justification": "(Theory says the word \"because\" should increase helpful reactions even if what follows is illogical): Could you tell me what the yellow thing on the desk is? It's because the it looks great on the desk!"
         }
@@ -81,7 +77,9 @@
           "Expertise Compliment": [
             "You seem like a local food expert! What is in the bowl?",
             "You seem to know a lot about cats! What is the cat's breed?",
-            "You seem to know a lot about interior design. How many chairs are in the photo?"
+            "You seem to know a lot about interior design. How many chairs are in the photo?",
+            "You seem to be an expert on nature. What kind of flower is this?",
+            "You seem to know a lot about traveling. What is that in the background?"
           ],
           "Content Compliment": [
             "what a cute picture!! is that a butterfly?",
@@ -90,6 +88,25 @@
             "Such a nice garden! What kind of flowers are those?",
             "That looks delicious! What is that green thing in the food?",
             "The bar looks like a fun place! What drink do you have in that mug?"
+          ],
+          "Semantic Unity": [
+            "I also really like interior design. What type of flowers are those?",
+            "I love chocolate too! What is that silver machine?",
+            "I am very interested in snakes too. Is this snake in its natural habitat?",
+            "I love to cook too! What is the green vegetable on the plate?"
+          ],
+          "Logical Justification": [
+            "Can you tell me where this is? because it looks so beautiful",
+            "What is this dog's breed? Because I really love dogs",
+            "What is that black food in the bowl? Because I want to make this sometime",
+            "What kind of drink are you holding because I want one too"
+          ],
+          "Illogical Justification": [
+            "Can you let me know what kind of dog this is? It's because I like cats too",
+            "What is this food? Because the plate is a nice blue color",
+            "What is under this plate? Because this food looks yummy",
+            "What kind of food is this? Because I like to travel",
+            "What is that rainbow food? it's because the table looks nice"
           ]
         }
 
@@ -126,7 +143,7 @@
         function chooseEngagementTechnique() {
           let techniqueNames = Object.keys(techniques);
           let techniqueDescriptions = Object.values(techniques);
-          let technique = 1;
+          let technique = 8;
           $("<p>")
             .append("We want you to write a sentence, such that the sentence will come before or after our question to make the question more effective. Please learn this technique for making questions more effective:")
             .css({ 'color': 'black', 'font-size': '120%' })
