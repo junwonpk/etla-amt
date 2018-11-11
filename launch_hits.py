@@ -34,9 +34,9 @@ if __name__ == '__main__':
   if args.hit_ids_file is None:
     print 'Need to input a hit_ids_file'
     sys.exit()
-  if os.path.isfile(args.hit_ids_file):
-    print 'hit_ids_file already exists'
-    sys.exit()
+  # if os.path.isfile(args.hit_ids_file):
+  #   print 'hit_ids_file already exists'
+  #   sys.exit()
 
   with open(args.hit_ids_file, 'w') as hit_ids_file:
     for i, line in enumerate(args.input_json_file):
@@ -60,4 +60,4 @@ if __name__ == '__main__':
           print e
       hit_id = boto_hit[0].HITId
       hit_ids_file.write('%s\n' % hit_id)
-      print 'Launched HIT ID: %s, %d' % (hit_id, i + 1)
+      print '%s' % (hit_id)
