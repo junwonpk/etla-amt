@@ -132,7 +132,7 @@
           for (i = 0; i < allinstagram.length; i++) {
             images.push(allinstagram[i][0]);
           }
-          var batch = 0;
+          var batch = 8;
           if (batch == 8) {
             return allinstagram.slice(80,85);
           } else {
@@ -143,7 +143,7 @@
         function chooseEngagementTechnique() {
           let techniqueNames = Object.keys(techniques);
           let techniqueDescriptions = Object.values(techniques);
-          let technique = 0;
+          let technique = 4;
           $("<p>")
             .append("We want you to write a sentence, such that the sentence will come before or after our question to make the question more effective. Please learn this technique for making questions more effective:")
             .css({ 'color': 'black', 'font-size': '120%' })
