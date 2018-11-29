@@ -1,8 +1,8 @@
 {
-  "title": "Write sentences about the images",
-  "description": "Write sentences about the images.",
+  "title": "Write sentences to enhance question",
+  "description": "Write sentences before or after given question to enhance question.",
   "keywords": "image,images,write,writing,sentence",
-  "reward": 0.35,
+  "reward": 0.36,
   "duration": 900,
   "frame_height": 20000,
   "max_assignments": 1,
