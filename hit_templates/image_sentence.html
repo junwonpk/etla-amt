@@ -60,10 +60,7 @@
       $(function() {
 
         // Define some default input.
-        var DEFAULT_INPUT = [
-          'http://samsuria.com/wp-content/uploads/2014/10/cute-cat-wallpapers.jpg',
-          'http://stuffpoint.com/cats/image/41633-cats-cute-cat.jpg',
-        ];
+        var DEFAULT_INPUT = [{"answer": "Elephant.", "question": "What animal is in the photo?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K/2326529.jpg", "image_id": 2326529}, {"answer": "Elephants.", "question": "What animal is shown?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K_2/2392070.jpg", "image_id": 2392070}, {"answer": "Ostrich.", "question": "What kind of animal is the stuffed toy?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K/10.jpg", "image_id": 10}, {"answer": "A bird.", "question": "What animal is shown?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K_2/2392075.jpg", "image_id": 2392075}, {"answer": "Elephants.", "question": "What animal is pictured?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K_2/2392077.jpg", "image_id": 2392077}, {"answer": "Horse.", "question": "What animal is shown?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K/2362297.jpg", "image_id": 2362297}, {"answer": "Horses.", "question": "What animals are pictured?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K/2359319.jpg", "image_id": 2359319}, {"answer": "A horse.", "question": "What animal is the part of the statue?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K/26.jpg", "image_id": 26}, {"answer": "Horse.", "question": "What animal is in the painting?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K_2/2392091.jpg", "image_id": 2392091}, {"answer": "Zebra.", "question": "What animals are in the photo?", "image_url": "https://cs.stanford.edu/people/rak248/VG_100K/2359326.jpg", "image_id": 2359326}];
 
         let techniques = {
             "Expertise Compliment": "Compliment the knowledge of listener based on photo they posted.",
@@ -172,7 +169,6 @@
         function render() {
           if (techniqueFlag) {chooseEngagementTechnique()};
 
-          console.log(input[idx]);
           // Set up the image
           $('#image-container').empty();
           $('<img>').attr('src', input[idx]["image_url"]).appendTo($('#image-container'));
@@ -212,14 +208,42 @@
           render();
         }
 
+        function check_current_input() {
+          descriptions[idx] = $('#text-area').val();
+
+          if (descriptions[idx].length < 10) {
+            alert('Sentence is not long enough. Please make this sentence longer than 10 characters.');
+            return false;
+          }
+          var NGRAM = 3
+          var BLEU_THRESHOLD = 0.20
+          var references = []
+          for (i = 0; i < descriptions.length; i++) {
+            if (i == idx) {continue;}
+            if (descriptions[i] == undefined) {continue;}
+            if (descriptions[i].length == 0) {continue;}
+            references.push(descriptions[i])
+          }
+          if (!VG.is_unique_sentence(descriptions[idx], references, BLEU_THRESHOLD, NGRAM)) {
+            alert("Error: This sentence is too similar to another answer you submitted.");
+            return false;
+          }
+          var output = _.map(_.zip(input, descriptions), function(x) {
+            return {'image_url': x[0]["image_url"], 'question': x[0]["question"], 'answer': x[0]["answer"], 'technique': x[1]};
+          });
+          console.log(output)
+          return true
+        }
+
         // Enable the UI.
         function enable_hit() {
           enabled = true;
 
           // Enable components
           $('#next-btn').click(function() {
-            // get_output();
-            set_idx(idx + 1)
+            if(check_current_input()) {
+              set_idx(idx + 1)
+            }
           });
           $('#prev-btn').click(function() { set_idx(idx - 1) });
           $('#text-area').prop('disabled', false);
@@ -229,13 +253,20 @@
           simpleamt.setupSubmit();
           $('#submit-btn').click(function() {
             descriptions[idx] = $('#text-area').val();
-            if (_.any(descriptions, function(d) { return d.length < 5; })) {
-              alert('Sentence is not long enough. Please make each sentence longer than 5 words.');
+            if (_.any(descriptions, function(d) { return d.length < 10; })) {
+              alert('Sentence is not long enough. Please make each sentence longer than 10 characters.');
               return false;
             }
-            var NGRAM = 2
-            var BLEU_THRESHOLD = 0.7
-            if (_.any(descriptions, function(d) { return !VG.is_unique_sentence(d['text'], BLEU_THRESHOLD, NGRAM); })) {
+            var NGRAM = 3
+            var BLEU_THRESHOLD = 0.20
+            var references = []
+            for (i = 0; i < descriptions.length; i++) {
+              if (i == idx) {continue;}
+              if (descriptions[i] == undefined) {continue;}
+              if (descriptions[i].length == 0) {continue;}
+              references.push(descriptions[i])
+            }
+            if (_.any(descriptions, function(d) { return !VG.is_unique_sentence(d, references, BLEU_THRESHOLD, NGRAM); })) {
               alert("Error: Some submissions are too similar or written too many times.");
               return false;
             }
